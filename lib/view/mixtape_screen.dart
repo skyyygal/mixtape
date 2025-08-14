@@ -29,12 +29,20 @@ class _MixtapeScreenState extends State<MixtapeScreen> {
                     child: Column(
                       children: [
                         SizedBox(
-                          width: 350,
-                          height: 250,
+                          width: 450,
+                          height: 350,
                           child: SvgPicture.asset("asset/images/cassette.svg"),
                         ),
                         const SizedBox(height: 32),
                         buildCassetteTape(),
+                        Spacer(),
+                        // Footer
+                        const Center(
+                          child: Text(
+                            '© 2025 Skyyygal MIXTAPES • ALL RIGHTS RESERVED',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -76,6 +84,7 @@ class _MixtapeScreenState extends State<MixtapeScreen> {
                 topRight: Radius.circular(20),
               ),
             ),
+            child: SvgPicture.asset("asset/images/musical.svg"),
           ),
 
           Container(
@@ -88,42 +97,41 @@ class _MixtapeScreenState extends State<MixtapeScreen> {
               ),
             ),
             child: Center(
-              child: SizedBox(
-                height: 20,
-                // decoration: BoxDecoration(color: Colors.black),
+              child: Container(
+                height: 35,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [],
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: SvgPicture.asset(
+                        "asset/images/wheel.svg",
+                        height: 24,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: SvgPicture.asset(
+                        "asset/images/wheel.svg",
+                        height: 24,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: [
-          //     // Left Slash
-          //     Transform.rotate(
-          //       angle: 0.5, // roughly -30 degrees in radians
-          //       child: Container(width: 2, height: 20, color: Colors.brown),
-          //     ),
-
-          //     // Horizontal Line
-          //     Expanded(
-          //       child: Container(
-          //         height: 2,
-          //         color: Colors.brown,
-          //         margin: const EdgeInsets.symmetric(horizontal: 8),
-          //       ),
-          //     ),
-
-          //     // Right Slash
-          //     Transform.rotate(
-          //       angle: -0.5, // roughly +30 degrees in radians
-          //       child: Container(width: 2, height: 20, color: Colors.brown),
-          //     ),
-          //   ],
-          // ),
+          Spacer(),
+          SizedBox(
+            height: 40,
+            width: double.infinity,
+            child: CustomPaint(painter: CassetteOutlinePainter()),
+          ),
         ],
       ),
     );
@@ -272,15 +280,6 @@ class _MixtapeScreenState extends State<MixtapeScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 40),
-
-        // Footer
-        const Center(
-          child: Text(
-            '© 2025 Skyyygal MIXTAPES • ALL RIGHTS RESERVED',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-        ),
       ],
     );
   }
@@ -295,58 +294,52 @@ class _MixtapeScreenState extends State<MixtapeScreen> {
   }
 }
 
-class _TapeWheel extends StatelessWidget {
-  const _TapeWheel();
-
+class CassetteOutlinePainter extends CustomPainter {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 30,
-      height: 30,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withOpacity(0.3),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Container(
-          width: 10,
-          height: 10,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFFD19A4E), // brown
-          ),
-        ),
-      ),
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = const Color(0xFF5A3E2B)
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    path.moveTo(50, size.height);
+    path.lineTo(size.width * 0.2, 0);
+    path.lineTo(size.width * 0.8, 0);
+    path.lineTo(size.width * 0.85, size.height);
+
+    canvas.drawPath(path, paint);
+
+    // 🎵 Dots (the circles)
+    final dotPaint = Paint()..color = const Color(0xFFF5E8D0);
+    const double radius = 5;
+
+    // Left dots
+    canvas.drawCircle(
+      Offset(size.width * 0.3, size.height / 2),
+      radius,
+      dotPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.4, size.height / 2),
+      radius,
+      dotPaint,
+    );
+
+    // Right dots
+    canvas.drawCircle(
+      Offset(size.width * 0.6, size.height / 2),
+      radius,
+      dotPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.7, size.height / 2),
+      radius,
+      dotPaint,
     );
   }
-}
-
-class _TapeButton extends StatelessWidget {
-  const _TapeButton();
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-    );
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
